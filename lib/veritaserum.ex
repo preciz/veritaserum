@@ -110,10 +110,7 @@ defmodule Veritaserum do
   defp split_on_emoticons([head | tail], text_list) do
     new_text_list =
       text_list
-      |> Enum.map(fn string ->
-        string
-        |> String.split(~r/#{head}/, include_captures: true)
-      end)
+      |> Enum.map(&String.split(&1, ~r/#{head}/, include_captures: true))
       |> List.flatten
 
     split_on_emoticons(tail, new_text_list)
