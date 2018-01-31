@@ -31,6 +31,7 @@ defmodule Veritaserum do
   def analyze(input, options \\ [])
   def analyze(input, options) do
     return = Keyword.get(options, :return, :score)
+    evaluators = Keyword.get(options, :evaluators, :all)
 
     marked_list =
       input
@@ -39,6 +40,15 @@ defmodule Veritaserum do
       |> split_on_emoticons
       |> mark_list
       |> Enum.reverse
+
+    marked_list =
+      case evaluators do
+        :all ->
+          marked_list
+        evaluators when is_list(evaluators) ->
+          marked_list
+          |> Enum.filter(fn {type, _, _} -> type in evaluators end)
+      end
 
     score =
       marked_list
@@ -83,6 +93,7 @@ defmodule Veritaserum do
     end
   end
 
+  defp analyze_list([]), do: [0]
   defp analyze_list([head | tail]) do
     analyze_list(tail, head, [analyze_mark(head)])
   end
